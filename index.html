@@ -24,30 +24,6 @@
             <p class="api-status" id="apiStatus"></p>
         </div>
 
-        <!-- Settings Panel -->
-        <div class="section settings-panel" id="settingsPanel" style="display: none;">
-            <h2>⚙️ Settings & Debug Info</h2>
-            <button onclick="toggleSettings()" class="btn-secondary" style="margin-bottom: 15px;">
-                Show/Hide Settings
-            </button>
-            <div id="settingsContent" style="display: none;">
-                <div class="setting-item">
-                    <strong>API Key:</strong> <span id="displayApiKey"></span>
-                    <button onclick="clearApiKey()" class="btn-small">Clear & Re-enter</button>
-                </div>
-                <div class="setting-item">
-                    <strong>Model Version:</strong> <code>claude-sonnet-4-5-20250929</code>
-                </div>
-                <div class="setting-item">
-                    <strong>API Endpoint:</strong> <code>https://api.anthropic.com/v1/messages</code>
-                </div>
-                <div class="setting-item">
-                    <button onclick="testApiConnection()" class="btn-primary">🧪 Test API Connection</button>
-                    <div id="testResult" style="margin-top: 10px;"></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Main App -->
         <div class="section" id="mainApp" style="display: none;">
             
@@ -142,6 +118,29 @@
                 <button onclick="downloadPost()" class="btn-success btn-large" id="downloadBtn" style="display: none;">
                     ⬇️ Download Post
                 </button>
+            </div>
+
+            <!-- Settings Panel - Compact at Bottom -->
+            <div class="settings-compact" id="settingsPanel" style="display: none;">
+                <button onclick="toggleSettings()" class="btn-settings">
+                    ⚙️ Settings & Debug
+                </button>
+                <div id="settingsContent" style="display: none;">
+                    <div class="setting-item-compact">
+                        <strong>API Key:</strong> <span id="displayApiKey"></span>
+                        <button onclick="clearApiKey()" class="btn-tiny">Clear</button>
+                    </div>
+                    <div class="setting-item-compact">
+                        <strong>Model:</strong> <code>claude-sonnet-4-5-20250929</code>
+                    </div>
+                    <div class="setting-item-compact">
+                        <strong>Endpoint:</strong> <code>claud-proxy.mrpoffice.workers.dev</code>
+                    </div>
+                    <div class="setting-item-compact">
+                        <button onclick="testApiConnection()" class="btn-small">🧪 Test Connection</button>
+                        <div id="testResult" style="margin-top: 8px; font-size: 0.9em;"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

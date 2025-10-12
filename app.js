@@ -116,7 +116,7 @@ async function testApiConnection() {
     }
 
     try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,9 +193,9 @@ async function improveText() {
     loadingSpinner.style.display = 'block';
 
     try {
-        console.log('Sending request to Anthropic API...');
+        console.log('Sending request to Cloudflare proxy...');
         
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

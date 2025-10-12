@@ -100,43 +100,74 @@ header p {
     color: #721c24;
 }
 
-.settings-panel {
-    background: #e8f4f8;
-    border: 2px solid #4A90E2;
-}
-
-.settings-panel h2 {
-    color: #2c5f7f;
-    margin-bottom: 15px;
-}
-
-.setting-item {
-    background: white;
+.settings-compact {
+    margin-top: 30px;
     padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
+    background: #f9f9f9;
+    border-radius: 10px;
     border: 1px solid #ddd;
 }
 
-.setting-item strong {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
+.btn-settings {
+    width: 100%;
+    padding: 10px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-.setting-item code {
+.btn-settings:hover {
+    background: #5a6268;
+}
+
+.setting-item-compact {
+    background: white;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    font-size: 0.9em;
+}
+
+.setting-item-compact strong {
+    display: inline-block;
+    margin-right: 8px;
+    color: #333;
+    font-size: 0.85em;
+}
+
+.setting-item-compact code {
     background: #f4f4f4;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 2px 6px;
+    border-radius: 3px;
     font-family: monospace;
+    font-size: 0.85em;
     color: #c7254e;
 }
 
+.btn-tiny {
+    padding: 4px 10px;
+    font-size: 0.8em;
+    margin-left: 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-tiny:hover {
+    background: #c82333;
+}
+
 .btn-small {
-    padding: 6px 15px;
-    font-size: 0.9em;
-    margin-left: 10px;
-    background: #6c757d;
+    padding: 8px 16px;
+    font-size: 0.85em;
+    background: #4A90E2;
     color: white;
     border: none;
     border-radius: 5px;
@@ -144,7 +175,7 @@ header p {
 }
 
 .btn-small:hover {
-    background: #5a6268;
+    background: #357ABD;
 }
 
 .brand-color-section {
