@@ -6,8 +6,9 @@ let apiKey = localStorage.getItem('anthropicApiKey');
 // Initialize app
 window.onload = function() {
     if (apiKey) {
-        document.getElementById('apiStatus').textContent = '✅ API Key saved! You can start creating posts.';
-        document.getElementById('apiStatus').className = 'api-status success';
+        const masked = apiKey.substring(0, 12) + '...' + apiKey.substring(apiKey.length - 4);
+        document.getElementById('displayApiKey').textContent = masked;
+        document.getElementById('settingsPanel').style.display = 'block';
         document.getElementById('mainApp').style.display = 'block';
         document.getElementById('apiSetup').style.display = 'none';
     }
@@ -74,10 +75,77 @@ function saveApiKey() {
     statusEl.textContent = '✅ API Key saved successfully!';
     statusEl.className = 'api-status success';
 
+    // Show masked key in settings
+    const masked = key.substring(0, 12) + '...' + key.substring(key.length - 4);
+    document.getElementById('displayApiKey').textContent = masked;
+
     setTimeout(() => {
         document.getElementById('apiSetup').style.display = 'none';
+        document.getElementById('settingsPanel').style.display = 'block';
         document.getElementById('mainApp').style.display = 'block';
     }, 1000);
+}
+
+// Toggle settings visibility
+function toggleSettings() {
+    const content = document.getElementById('settingsContent');
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+}
+
+// Clear API key
+function clearApiKey() {
+    if (confirm('Are you sure you want to clear your API key? You will need to re-enter it.')) {
+        localStorage.removeItem('anthropicApiKey');
+        apiKey = null;
+        document.getElementById('settingsPanel').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('apiSetup').style.display = 'block';
+        document.getElementById('apiKeyInput').value = '';
+        document.getElementById('apiStatus').textContent = '';
+    }
+}
+
+// Test API connection
+async function testApiConnection() {
+    const testResult = document.getElementById('testResult');
+    testResult.innerHTML = '<em>Testing connection...</em>';
+
+    if (!apiKey) {
+        testResult.innerHTML = '❌ No API key found!';
+        return;
+    }
+
+    try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-5-20250929',
+                max_tokens: 50,
+                messages: [{
+                    role: 'user',
+                    content: 'Reply with just "OK" if you receive this.'
+                }]
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            testResult.innerHTML = `✅ <strong>API Connection Successful!</strong><br>Model: claude-sonnet-4-5-20250929<br>Response: "${data.content[0].text}"`;
+            testResult.style.color = 'green';
+        } else {
+            const errorData = await response.json();
+            testResult.innerHTML = `❌ <strong>API Error ${response.status}:</strong><br>${errorData.error?.message || 'Unknown error'}`;
+            testResult.style.color = 'red';
+        }
+    } catch (error) {
+        testResult.innerHTML = `❌ <strong>Connection Failed:</strong><br>${error.message}`;
+        testResult.style.color = 'red';
+    }
 }
 
 // Handle image upload
@@ -135,7 +203,7 @@ async function improveText() {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-sonnet-4--',
+                model: 'claude-sonnet-4-5-20250929',
                 max_tokens: 1024,
                 messages: [{
                     role: 'user',
@@ -248,14 +316,16 @@ function generatePost() {
 
     let currentY = headerHeight + padding;
 
-    // Before label
+    // Before label - center it properly above the before image
     ctx.fillStyle = '#333333';
-    ctx.font = 'bold 24px Arial';
+    ctx.font = 'bold 32px Arial';  // Increased from 28px to 32px
     ctx.textAlign = 'center';
-    ctx.fillText('BEFORE', padding + beforeWidth / 2, currentY);
+    const beforeCenterX = padding + (beforeWidth / 2);
+    ctx.fillText('BEFORE', beforeCenterX, currentY);
 
-    // After label
-    ctx.fillText('AFTER', padding + beforeWidth + imageGap + afterWidth / 2, currentY);
+    // After label - center it properly above the after image
+    const afterCenterX = padding + beforeWidth + imageGap + (afterWidth / 2);
+    ctx.fillText('AFTER', afterCenterX, currentY);
 
     currentY += 30;
 
@@ -265,10 +335,10 @@ function generatePost() {
 
     currentY += targetHeight + 30;
 
-    // Description text
+    // Description text - LARGER FONT
     if (description) {
         ctx.fillStyle = '#333333';
-        ctx.font = '20px Arial';
+        ctx.font = '28px Arial';  // Increased from 20px to 28px
         ctx.textAlign = 'center';
         
         // Word wrap
@@ -276,7 +346,7 @@ function generatePost() {
         const words = description.split(' ');
         let line = '';
         let lineY = currentY;
-        const lineHeight = 30;
+        const lineHeight = 38;  // Increased from 30 to 38 for better spacing
 
         for (let word of words) {
             const testLine = line + word + ' ';
@@ -316,7 +386,7 @@ function generatePost() {
     // Contact Information
     if (contactInfo.length > 0) {
         ctx.fillStyle = '#333333';
-        ctx.font = '22px Arial';
+        ctx.font = '26px Arial';  // Increased from 22px to 26px
         ctx.textAlign = 'center';
         
         contactInfo.forEach((contact, index) => {

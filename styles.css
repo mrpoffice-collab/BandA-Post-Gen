@@ -100,6 +100,53 @@ header p {
     color: #721c24;
 }
 
+.settings-panel {
+    background: #e8f4f8;
+    border: 2px solid #4A90E2;
+}
+
+.settings-panel h2 {
+    color: #2c5f7f;
+    margin-bottom: 15px;
+}
+
+.setting-item {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.setting-item strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.setting-item code {
+    background: #f4f4f4;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #c7254e;
+}
+
+.btn-small {
+    padding: 6px 15px;
+    font-size: 0.9em;
+    margin-left: 10px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    background: #5a6268;
+}
+
 .brand-color-section {
     display: flex;
     align-items: center;

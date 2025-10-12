@@ -24,6 +24,30 @@
             <p class="api-status" id="apiStatus"></p>
         </div>
 
+        <!-- Settings Panel -->
+        <div class="section settings-panel" id="settingsPanel" style="display: none;">
+            <h2>⚙️ Settings & Debug Info</h2>
+            <button onclick="toggleSettings()" class="btn-secondary" style="margin-bottom: 15px;">
+                Show/Hide Settings
+            </button>
+            <div id="settingsContent" style="display: none;">
+                <div class="setting-item">
+                    <strong>API Key:</strong> <span id="displayApiKey"></span>
+                    <button onclick="clearApiKey()" class="btn-small">Clear & Re-enter</button>
+                </div>
+                <div class="setting-item">
+                    <strong>Model Version:</strong> <code>claude-sonnet-4-5-20250929</code>
+                </div>
+                <div class="setting-item">
+                    <strong>API Endpoint:</strong> <code>https://api.anthropic.com/v1/messages</code>
+                </div>
+                <div class="setting-item">
+                    <button onclick="testApiConnection()" class="btn-primary">🧪 Test API Connection</button>
+                    <div id="testResult" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Main App -->
         <div class="section" id="mainApp" style="display: none;">
             
