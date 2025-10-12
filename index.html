@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Before & After Post Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✨ Before & After Post Generator</h1>
+            <p>Create stunning branded transformation posts</p>
+        </header>
+
+        <!-- API Key Setup Section -->
+        <div class="section api-setup" id="apiSetup">
+            <h2>🔑 One-Time Setup</h2>
+            <p class="help-text">Enter your Anthropic API key to enable AI text improvement. <a href="https://console.anthropic.com/" target="_blank">Get your key here</a></p>
+            <div class="input-group">
+                <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
+                <button onclick="saveApiKey()" class="btn-primary">Save Key</button>
+            </div>
+            <p class="api-status" id="apiStatus"></p>
+        </div>
+
+        <!-- Main App -->
+        <div class="section" id="mainApp" style="display: none;">
+            
+            <!-- Brand Color -->
+            <div class="brand-color-section">
+                <label for="brandColor">Brand Color:</label>
+                <input type="color" id="brandColor" value="#4A90E2">
+                <span class="color-preview" id="colorPreview">#4A90E2</span>
+            </div>
+
+            <!-- Image Uploads -->
+            <div class="upload-section">
+                <div class="upload-box">
+                    <label for="beforeImage" class="upload-label">
+                        <div class="upload-content">
+                            <span class="upload-icon">📷</span>
+                            <span>Before Image</span>
+                        </div>
+                    </label>
+                    <input type="file" id="beforeImage" accept="image/*" onchange="handleImageUpload('before')">
+                    <div class="image-preview" id="beforePreview"></div>
+                </div>
+
+                <div class="upload-box">
+                    <label for="afterImage" class="upload-label">
+                        <div class="upload-content">
+                            <span class="upload-icon">📷</span>
+                            <span>After Image</span>
+                        </div>
+                    </label>
+                    <input type="file" id="afterImage" accept="image/*" onchange="handleImageUpload('after')">
+                    <div class="image-preview" id="afterPreview"></div>
+                </div>
+            </div>
+
+            <!-- Text Content -->
+            <div class="content-section">
+                <label for="postDescription">Post Description:</label>
+                <textarea id="postDescription" rows="4" placeholder="Write your before/after story here..."></textarea>
+                <button onclick="improveText()" class="btn-secondary" id="improveBtn">
+                    ✨ Improve with AI
+                </button>
+                <div class="loading" id="loadingSpinner" style="display: none;">Improving your text...</div>
+            </div>
+
+            <!-- CTA Selection -->
+            <div class="cta-section">
+                <label for="ctaSelect">Call to Action:</label>
+                <select id="ctaSelect" onchange="toggleContactFields()">
+                    <option value="">No CTA</option>
+                    <option value="Learn More">Learn More</option>
+                    <option value="Shop Now">Shop Now</option>
+                    <option value="Sign Up">Sign Up</option>
+                    <option value="Get Started">Get Started</option>
+                    <option value="Book Now">Book Now</option>
+                    <option value="Contact Us">Contact Us</option>
+                    <option value="Try Free">Try Free</option>
+                    <option value="See Results">See Results</option>
+                </select>
+
+                <div class="contact-info" id="contactInfo" style="display: none;">
+                    <h4>Add Your Contact Information:</h4>
+                    <div class="contact-field">
+                        <label>
+                            <input type="checkbox" id="showPhone" onchange="togglePhoneInput()"> 
+                            📞 Phone
+                        </label>
+                        <input type="tel" id="phoneNumber" placeholder="(555) 123-4567" style="display: none;">
+                    </div>
+                    <div class="contact-field">
+                        <label>
+                            <input type="checkbox" id="showEmail" onchange="toggleEmailInput()"> 
+                            ✉️ Email
+                        </label>
+                        <input type="email" id="emailAddress" placeholder="contact@business.com" style="display: none;">
+                    </div>
+                    <div class="contact-field">
+                        <label>
+                            <input type="checkbox" id="showWebsite" onchange="toggleWebsiteInput()"> 
+                            🌐 Website
+                        </label>
+                        <input type="url" id="websiteUrl" placeholder="www.yourbusiness.com" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview & Download -->
+            <div class="preview-section">
+                <h3>Preview:</h3>
+                <canvas id="previewCanvas"></canvas>
+                <button onclick="generatePost()" class="btn-primary btn-large">🎨 Generate Post</button>
+                <button onclick="downloadPost()" class="btn-success btn-large" id="downloadBtn" style="display: none;">
+                    ⬇️ Download Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
