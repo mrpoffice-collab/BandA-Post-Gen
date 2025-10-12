@@ -115,6 +115,8 @@ async function testApiConnection() {
         return;
     }
 
+    console.log('API Key being sent:', apiKey.substring(0, 15) + '...');
+
     try {
         const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
@@ -134,16 +136,21 @@ async function testApiConnection() {
             })
         });
 
+        console.log('Response status:', response.status);
+        const responseText = await response.text();
+        console.log('Response body:', responseText);
+
         if (response.ok) {
-            const data = await response.json();
+            const data = JSON.parse(responseText);
             testResult.innerHTML = `✅ <strong>API Connection Successful!</strong><br>Model: claude-sonnet-4-5-20250929<br>Response: "${data.content[0].text}"`;
             testResult.style.color = 'green';
         } else {
-            const errorData = await response.json();
-            testResult.innerHTML = `❌ <strong>API Error ${response.status}:</strong><br>${errorData.error?.message || 'Unknown error'}`;
+            const errorData = JSON.parse(responseText);
+            testResult.innerHTML = `❌ <strong>API Error ${response.status}:</strong><br>${errorData.error?.message || errorData.message || 'Unknown error'}`;
             testResult.style.color = 'red';
         }
     } catch (error) {
+        console.error('Full error:', error);
         testResult.innerHTML = `❌ <strong>Connection Failed:</strong><br>${error.message}`;
         testResult.style.color = 'red';
     }
