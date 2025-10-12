@@ -135,7 +135,7 @@ async function improveText() {
                 'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
+                model: 'claude-sonnet-4--',
                 max_tokens: 1024,
                 messages: [{
                     role: 'user',
