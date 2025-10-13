@@ -45,18 +45,13 @@ function saveUserProfile() {
         website: document.getElementById('userWebsite').value.trim()
     };
     
-    console.log('Saving user profile:', userProfile);
-    
     localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    
-    console.log('Profile saved to localStorage');
     
     const statusEl = document.getElementById('profileSaveStatus');
     statusEl.textContent = '✅ Profile saved!';
     statusEl.className = 'save-status success';
     
     // Repopulate CTA options with new name
-    console.log('Calling populateCtaOptions...');
     populateCtaOptions();
     
     // Auto-fill contact fields
@@ -72,12 +67,8 @@ function populateCtaOptions() {
     const select = document.getElementById('ctaSelect');
     select.innerHTML = '<option value="">No CTA</option>';
     
-    console.log('Populating CTA options. User profile:', userProfile);
-    console.log('User name:', userProfile.name);
-    
     // Personal CTAs (only if name is saved)
     if (userProfile.name && userProfile.name.trim() !== '') {
-        console.log('Adding personalized CTAs for:', userProfile.name);
         const personalGroup = document.createElement('optgroup');
         personalGroup.label = '✨ Personal CTAs';
         
@@ -90,8 +81,6 @@ function populateCtaOptions() {
             <option value="Visit with ${userProfile.name}">Visit with ${userProfile.name}</option>
         `;
         select.appendChild(personalGroup);
-    } else {
-        console.log('No name saved - skipping personalized CTAs');
     }
     
     // Generic CTAs
@@ -247,8 +236,6 @@ async function improveText() {
     loadingSpinner.style.display = 'block';
 
     try {
-        console.log('Sending request to improve text...');
-        
         const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
             headers: {
@@ -266,8 +253,6 @@ Original text: ${description}`
             })
         });
 
-        console.log('Response status:', response.status);
-
         if (!response.ok) {
             const errorData = await response.json();
             console.error('API Error:', errorData);
@@ -275,7 +260,6 @@ Original text: ${description}`
         }
 
         const data = await response.json();
-        console.log('Success! Got response:', data);
         
         const improvedText = data.content[0].text;
         
