@@ -85,6 +85,7 @@ function populateCtaOptions() {
             <option value="Call ${userProfile.name}">Call ${userProfile.name}</option>
             <option value="Text ${userProfile.name}">Text ${userProfile.name}</option>
             <option value="Email ${userProfile.name}">Email ${userProfile.name}</option>
+            <option value="Book ${userProfile.name}">Book ${userProfile.name}</option>
             <option value="Message ${userProfile.name}">Message ${userProfile.name}</option>
             <option value="Visit ${userProfile.name}">Visit ${userProfile.name}</option>
         `;
@@ -364,7 +365,7 @@ function generatePost() {
         // Pre-calculate how many lines the text will take
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.font = '24px Arial';
+        tempCtx.font = '26px Arial';
         const maxWidth = 1200; // Approximate width for calculation
         const words = description.split(' ');
         let line = '';
@@ -383,7 +384,7 @@ function generatePost() {
         lineCount++; // Add last line
         
         // VERY GENEROUS spacing - add 50% more space to prevent any cut-off
-        actualTextHeight = (lineCount * 34) + 80; // Extra 80px padding
+        actualTextHeight = (lineCount * 36) + 80; // Extra 80px padding
     }
     
     const ctaHeight = cta ? 130 : 0; // Extra room for CTA button
@@ -437,7 +438,7 @@ function generatePost() {
     // Description text - LARGER FONT
     if (description) {
         ctx.fillStyle = '#333333';
-        ctx.font = '24px Arial';  // Reduced to 24px for better fit
+        ctx.font = '26px Arial';  // Increased to 26px for better readability
         ctx.textAlign = 'center';
         
         // Word wrap - calculate how many lines we actually need
@@ -445,7 +446,7 @@ function generatePost() {
         const words = description.split(' ');
         let line = '';
         let lines = [];
-        const lineHeight = 34;
+        const lineHeight = 36;
 
         for (let word of words) {
             const testLine = line + word + ' ';
