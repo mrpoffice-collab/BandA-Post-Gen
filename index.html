@@ -13,19 +13,8 @@
             <p>Create stunning branded transformation posts</p>
         </header>
 
-        <!-- API Key Setup Section -->
-        <div class="section api-setup" id="apiSetup">
-            <h2>🔑 One-Time Setup</h2>
-            <p class="help-text">Enter your Anthropic API key to enable AI text improvement. <a href="https://console.anthropic.com/" target="_blank">Get your key here</a></p>
-            <div class="input-group">
-                <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
-                <button onclick="saveApiKey()" class="btn-primary">Save Key</button>
-            </div>
-            <p class="api-status" id="apiStatus"></p>
-        </div>
-
         <!-- Main App -->
-        <div class="section" id="mainApp" style="display: none;">
+        <div class="section" id="mainApp">
             
             <!-- Brand Color -->
             <div class="brand-color-section">
@@ -73,19 +62,11 @@
             <div class="cta-section">
                 <label for="ctaSelect">Call to Action:</label>
                 <select id="ctaSelect" onchange="toggleContactFields()">
-                    <option value="">No CTA</option>
-                    <option value="Learn More">Learn More</option>
-                    <option value="Shop Now">Shop Now</option>
-                    <option value="Sign Up">Sign Up</option>
-                    <option value="Get Started">Get Started</option>
-                    <option value="Book Now">Book Now</option>
-                    <option value="Contact Us">Contact Us</option>
-                    <option value="Try Free">Try Free</option>
-                    <option value="See Results">See Results</option>
+                    <!-- Options will be populated by JavaScript -->
                 </select>
 
                 <div class="contact-info" id="contactInfo" style="display: none;">
-                    <h4>Add Your Contact Information:</h4>
+                    <h4>Contact Information to Display:</h4>
                     <div class="contact-field">
                         <label>
                             <input type="checkbox" id="showPhone" onchange="togglePhoneInput()"> 
@@ -123,22 +104,55 @@
             <!-- Settings Panel - Compact at Bottom -->
             <div class="settings-compact" id="settingsPanel" style="display: none;">
                 <button onclick="toggleSettings()" class="btn-settings">
-                    ⚙️ Settings & Debug
+                    ⚙️ Settings & Profile
                 </button>
                 <div id="settingsContent" style="display: none;">
-                    <div class="setting-item-compact">
-                        <strong>API Key:</strong> <span id="displayApiKey"></span>
-                        <button onclick="clearApiKey()" class="btn-tiny">Clear</button>
+                    
+                    <!-- User Profile Section -->
+                    <div class="profile-section">
+                        <h4>👤 Your Information</h4>
+                        <p class="profile-hint">Auto-fills on every post. Save once, use forever!</p>
+                        
+                        <div class="profile-field">
+                            <label for="userName">Name for Personalization</label>
+                            <input type="text" id="userName" placeholder="Joe">
+                            <small>💡 Used for personal CTAs like "Call Joe" or "Text Joe"</small>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label for="userPhone">Phone Number</label>
+                            <input type="tel" id="userPhone" placeholder="(555) 123-4567">
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label for="userEmail">Email Address</label>
+                            <input type="email" id="userEmail" placeholder="joe@business.com">
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label for="userWebsite">Website</label>
+                            <input type="url" id="userWebsite" placeholder="www.yourbusiness.com">
+                        </div>
+                        
+                        <button onclick="saveUserProfile()" class="btn-primary" style="width: 100%; margin-top: 10px;">
+                            💾 Save My Info
+                        </button>
+                        <p class="save-status" id="profileSaveStatus"></p>
                     </div>
-                    <div class="setting-item-compact">
-                        <strong>Model:</strong> <code>claude-sonnet-4-5-20250929</code>
-                    </div>
-                    <div class="setting-item-compact">
-                        <strong>Endpoint:</strong> <code>claud-proxy.mrpoffice.workers.dev</code>
-                    </div>
-                    <div class="setting-item-compact">
-                        <button onclick="testApiConnection()" class="btn-small">🧪 Test Connection</button>
-                        <div id="testResult" style="margin-top: 8px; font-size: 0.9em;"></div>
+                    
+                    <!-- Debug Info Section -->
+                    <div class="debug-section" style="margin-top: 20px;">
+                        <h4>🔧 Debug Info</h4>
+                        <div class="setting-item-compact">
+                            <strong>Model:</strong> <code>claude-sonnet-4-5-20250929</code>
+                        </div>
+                        <div class="setting-item-compact">
+                            <strong>Endpoint:</strong> <code>claud-proxy.mrpoffice.workers.dev</code>
+                        </div>
+                        <div class="setting-item-compact">
+                            <button onclick="testApiConnection()" class="btn-small">🧪 Test AI Connection</button>
+                            <div id="testResult" style="margin-top: 8px; font-size: 0.9em;"></div>
+                        </div>
                     </div>
                 </div>
             </div>

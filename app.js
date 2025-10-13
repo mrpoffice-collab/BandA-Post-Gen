@@ -1,23 +1,115 @@
 // Global variables
 let beforeImage = null;
 let afterImage = null;
-let apiKey = localStorage.getItem('anthropicApiKey');
+let userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
 
 // Initialize app
 window.onload = function() {
-    if (apiKey) {
-        const masked = apiKey.substring(0, 12) + '...' + apiKey.substring(apiKey.length - 4);
-        document.getElementById('displayApiKey').textContent = masked;
-        document.getElementById('settingsPanel').style.display = 'block';
-        document.getElementById('mainApp').style.display = 'block';
-        document.getElementById('apiSetup').style.display = 'none';
-    }
+    // Show main app immediately - no API key needed
+    document.getElementById('settingsPanel').style.display = 'block';
+    
+    // Load user profile
+    loadUserProfile();
+    
+    // Populate CTA options
+    populateCtaOptions();
 
     // Update color preview
     document.getElementById('brandColor').addEventListener('input', function(e) {
         document.getElementById('colorPreview').textContent = e.target.value;
     });
 };
+
+// Load user profile from localStorage
+function loadUserProfile() {
+    if (userProfile.name) {
+        document.getElementById('userName').value = userProfile.name;
+    }
+    if (userProfile.phone) {
+        document.getElementById('userPhone').value = userProfile.phone;
+    }
+    if (userProfile.email) {
+        document.getElementById('userEmail').value = userProfile.email;
+    }
+    if (userProfile.website) {
+        document.getElementById('userWebsite').value = userProfile.website;
+    }
+}
+
+// Save user profile
+function saveUserProfile() {
+    userProfile = {
+        name: document.getElementById('userName').value.trim(),
+        phone: document.getElementById('userPhone').value.trim(),
+        email: document.getElementById('userEmail').value.trim(),
+        website: document.getElementById('userWebsite').value.trim()
+    };
+    
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    
+    const statusEl = document.getElementById('profileSaveStatus');
+    statusEl.textContent = '✅ Profile saved!';
+    statusEl.className = 'save-status success';
+    
+    // Repopulate CTA options with new name
+    populateCtaOptions();
+    
+    // Auto-fill contact fields
+    autoFillContactFields();
+    
+    setTimeout(() => {
+        statusEl.textContent = '';
+    }, 3000);
+}
+
+// Populate CTA dropdown dynamically
+function populateCtaOptions() {
+    const select = document.getElementById('ctaSelect');
+    select.innerHTML = '<option value="">No CTA</option>';
+    
+    // Personal CTAs (only if name is saved)
+    if (userProfile.name) {
+        const personalGroup = document.createElement('optgroup');
+        personalGroup.label = '✨ Personal CTAs';
+        
+        personalGroup.innerHTML = `
+            <option value="Call ${userProfile.name}">Call ${userProfile.name}</option>
+            <option value="Text ${userProfile.name}">Text ${userProfile.name}</option>
+            <option value="Email ${userProfile.name}">Email ${userProfile.name}</option>
+            <option value="Message ${userProfile.name}">Message ${userProfile.name}</option>
+            <option value="Visit ${userProfile.name}">Visit ${userProfile.name}</option>
+        `;
+        select.appendChild(personalGroup);
+    }
+    
+    // Generic CTAs
+    const genericGroup = document.createElement('optgroup');
+    genericGroup.label = 'Generic CTAs';
+    genericGroup.innerHTML = `
+        <option value="Learn More">Learn More</option>
+        <option value="Shop Now">Shop Now</option>
+        <option value="Book Now">Book Now</option>
+        <option value="Get Started">Get Started</option>
+        <option value="Contact Us">Contact Us</option>
+        <option value="Sign Up">Sign Up</option>
+        <option value="Try Free">Try Free</option>
+        <option value="See Results">See Results</option>
+    `;
+    select.appendChild(genericGroup);
+}
+
+// Auto-fill contact fields from profile
+function autoFillContactFields() {
+    if (userProfile.phone) {
+        document.getElementById('phoneNumber').value = userProfile.phone;
+    }
+    if (userProfile.email) {
+        document.getElementById('emailAddress').value = userProfile.email;
+    }
+    if (userProfile.website) {
+        document.getElementById('websiteUrl').value = userProfile.website;
+    }
+}
 
 // Toggle contact info section
 function toggleContactFields() {
@@ -26,6 +118,8 @@ function toggleContactFields() {
     
     if (ctaValue) {
         contactInfo.style.display = 'block';
+        // Auto-fill from profile if available
+        autoFillContactFields();
     } else {
         contactInfo.style.display = 'none';
     }
@@ -53,78 +147,22 @@ function toggleWebsiteInput() {
     if (!checkbox.checked) input.value = '';
 }
 
-// Save API Key
-function saveApiKey() {
-    const key = document.getElementById('apiKeyInput').value.trim();
-    const statusEl = document.getElementById('apiStatus');
-
-    if (!key) {
-        statusEl.textContent = '❌ Please enter an API key';
-        statusEl.className = 'api-status error';
-        return;
-    }
-
-    if (!key.startsWith('sk-ant-')) {
-        statusEl.textContent = '❌ Invalid API key format. Should start with "sk-ant-"';
-        statusEl.className = 'api-status error';
-        return;
-    }
-
-    localStorage.setItem('anthropicApiKey', key);
-    apiKey = key;
-    statusEl.textContent = '✅ API Key saved successfully!';
-    statusEl.className = 'api-status success';
-
-    // Show masked key in settings
-    const masked = key.substring(0, 12) + '...' + key.substring(key.length - 4);
-    document.getElementById('displayApiKey').textContent = masked;
-
-    setTimeout(() => {
-        document.getElementById('apiSetup').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'block';
-        document.getElementById('mainApp').style.display = 'block';
-    }, 1000);
-}
-
 // Toggle settings visibility
 function toggleSettings() {
     const content = document.getElementById('settingsContent');
     content.style.display = content.style.display === 'none' ? 'block' : 'none';
 }
 
-// Clear API key
-function clearApiKey() {
-    if (confirm('Are you sure you want to clear your API key? You will need to re-enter it.')) {
-        localStorage.removeItem('anthropicApiKey');
-        apiKey = null;
-        document.getElementById('settingsPanel').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'none';
-        document.getElementById('apiSetup').style.display = 'block';
-        document.getElementById('apiKeyInput').value = '';
-        document.getElementById('apiStatus').textContent = '';
-    }
-}
-
-// Test API connection
+// Test API connection (no API key needed - it's in the worker)
 async function testApiConnection() {
     const testResult = document.getElementById('testResult');
-    testResult.innerHTML = '<em>Testing connection...</em>';
-
-    if (!apiKey) {
-        testResult.innerHTML = '❌ No API key found!';
-        return;
-    }
-
-    console.log('API Key being sent:', apiKey.substring(0, 15) + '...');
+    testResult.innerHTML = '<em>Testing AI connection...</em>';
 
     try {
         const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-dangerous-direct-browser-access': 'true'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 model: 'claude-sonnet-4-5-20250929',
@@ -136,21 +174,16 @@ async function testApiConnection() {
             })
         });
 
-        console.log('Response status:', response.status);
-        const responseText = await response.text();
-        console.log('Response body:', responseText);
-
         if (response.ok) {
-            const data = JSON.parse(responseText);
-            testResult.innerHTML = `✅ <strong>API Connection Successful!</strong><br>Model: claude-sonnet-4-5-20250929<br>Response: "${data.content[0].text}"`;
+            const data = await response.json();
+            testResult.innerHTML = `✅ <strong>AI Connection Successful!</strong><br>Response: "${data.content[0].text}"`;
             testResult.style.color = 'green';
         } else {
-            const errorData = JSON.parse(responseText);
-            testResult.innerHTML = `❌ <strong>API Error ${response.status}:</strong><br>${errorData.error?.message || errorData.message || 'Unknown error'}`;
+            const errorData = await response.json();
+            testResult.innerHTML = `❌ <strong>Connection Error ${response.status}:</strong><br>${errorData.error?.message || errorData.message || 'Unknown error'}`;
             testResult.style.color = 'red';
         }
     } catch (error) {
-        console.error('Full error:', error);
         testResult.innerHTML = `❌ <strong>Connection Failed:</strong><br>${error.message}`;
         testResult.style.color = 'red';
     }
@@ -191,25 +224,17 @@ async function improveText() {
         return;
     }
 
-    if (!apiKey) {
-        alert('Please set up your API key first!');
-        return;
-    }
-
     // Show loading
     improveBtn.disabled = true;
     loadingSpinner.style.display = 'block';
 
     try {
-        console.log('Sending request to Cloudflare proxy...');
+        console.log('Sending request to improve text...');
         
         const response = await fetch('https://claud-proxy.mrpoffice.workers.dev/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-dangerous-direct-browser-access': 'true'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 model: 'claude-sonnet-4-5-20250929',
@@ -228,7 +253,7 @@ Original text: ${description}`
         if (!response.ok) {
             const errorData = await response.json();
             console.error('API Error:', errorData);
-            throw new Error(`API Error ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+            throw new Error(`Error ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
         }
 
         const data = await response.json();
@@ -247,7 +272,7 @@ Original text: ${description}`
         let errorMessage = '❌ Error improving text.\n\n';
         
         if (error.message.includes('401') || error.message.includes('authentication')) {
-            errorMessage += 'Your API key appears to be invalid. Please check it and try again.';
+            errorMessage += 'Authentication error. Please contact support.';
         } else if (error.message.includes('429')) {
             errorMessage += 'Rate limit reached. Please wait a moment and try again.';
         } else if (error.message.includes('Failed to fetch')) {
@@ -256,7 +281,6 @@ Original text: ${description}`
             errorMessage += error.message;
         }
         
-        errorMessage += '\n\nCheck the browser console (F12) for more details.';
         alert(errorMessage);
     } finally {
         improveBtn.disabled = false;
