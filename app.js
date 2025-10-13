@@ -238,7 +238,7 @@ async function improveText() {
             },
             body: JSON.stringify({
                 model: 'claude-sonnet-4-5-20250929',
-                max_tokens: 1024,
+                max_tokens: 150,
                 messages: [{
                     role: 'user',
                     content: `You are a social media copywriting expert. Improve this before/after transformation post to make it engaging, compelling, and shareable for Facebook. Keep it authentic and conversational. Make it concise but impactful. Return ONLY the improved text, no explanations or commentary.
@@ -263,8 +263,13 @@ Original text: ${description}`
         
         document.getElementById('postDescription').value = improvedText;
         
-        // Show success message
-        alert('✨ Text improved successfully!');
+        // Silent success - just show button feedback
+        improveBtn.textContent = '✅ Improved!';
+        improveBtn.style.backgroundColor = '#28a745';
+        setTimeout(() => {
+            improveBtn.textContent = '✨ Improve with AI';
+            improveBtn.style.backgroundColor = '';
+        }, 2000);
 
     } catch (error) {
         console.error('Full error:', error);
@@ -344,12 +349,13 @@ function generatePost() {
         }
         lineCount++; // Add last line
         
-        actualTextHeight = (lineCount * 34) + 40; // Line height * lines + spacing
+        // VERY GENEROUS spacing - add 50% more space to prevent any cut-off
+        actualTextHeight = (lineCount * 34) + 80; // Extra 80px padding
     }
     
-    const ctaHeight = cta ? 100 : 0;
-    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 45 + 40) : 0;
-    const footerHeight = 60;
+    const ctaHeight = cta ? 130 : 0; // Extra room for CTA button
+    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 50 + 60) : 0; // Extra padding
+    const footerHeight = 80; // Extra footer space
 
     // Calculate image dimensions (make them equal height)
     const targetHeight = 500;
