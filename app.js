@@ -319,10 +319,10 @@ function generatePost() {
     const padding = 40;
     const imageGap = 30;
     const headerHeight = 80;
-    const textHeight = description ? 150 : 0;
-    const ctaHeight = cta ? 80 : 0;
-    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 40 + 30) : 0;
-    const footerHeight = 50;
+    const textHeight = description ? 200 : 0; // Increased from 150 to 200
+    const ctaHeight = cta ? 100 : 0; // Increased from 80 to 100
+    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 45 + 40) : 0; // Increased spacing
+    const footerHeight = 60; // Increased from 50 to 60
 
     // Calculate image dimensions (make them equal height)
     const targetHeight = 500;
@@ -371,37 +371,51 @@ function generatePost() {
     // Description text - LARGER FONT
     if (description) {
         ctx.fillStyle = '#333333';
-        ctx.font = '28px Arial';  // Increased from 20px to 28px
+        ctx.font = '26px Arial';  // Slightly reduced from 28px for better fit
         ctx.textAlign = 'center';
         
-        // Word wrap
+        // Word wrap with max lines
         const maxWidth = canvas.width - (padding * 2);
         const words = description.split(' ');
         let line = '';
         let lineY = currentY;
-        const lineHeight = 38;  // Increased from 30 to 38 for better spacing
+        const lineHeight = 36;  // Good spacing
+        const maxLines = 5; // Limit to 5 lines to prevent overflow
+        let lineCount = 0;
 
         for (let word of words) {
+            if (lineCount >= maxLines) break; // Stop if we hit max lines
+            
             const testLine = line + word + ' ';
             const metrics = ctx.measureText(testLine);
             if (metrics.width > maxWidth && line !== '') {
                 ctx.fillText(line, canvas.width / 2, lineY);
                 line = word + ' ';
                 lineY += lineHeight;
+                lineCount++;
             } else {
                 line = testLine;
             }
         }
-        ctx.fillText(line, canvas.width / 2, lineY);
-        currentY = lineY + 40;
+        
+        // Draw final line if under max
+        if (lineCount < maxLines) {
+            ctx.fillText(line, canvas.width / 2, lineY);
+        }
+        
+        currentY = lineY + 50; // More spacing after text
     }
 
     // CTA Button
     if (cta) {
-        const ctaWidth = 300;
-        const ctaButtonHeight = 60;
+        const ctaWidth = 350; // Increased from 300 to 350
+        const ctaButtonHeight = 70; // Increased from 60 to 70
         const ctaX = (canvas.width - ctaWidth) / 2;
         const ctaY = currentY;
+
+        // Button shadow for depth
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(ctaX + 2, ctaY + 2, ctaWidth, ctaButtonHeight);
 
         // Button
         ctx.fillStyle = brandColor;
@@ -409,22 +423,22 @@ function generatePost() {
 
         // Button text
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 24px Arial';
+        ctx.font = 'bold 28px Arial'; // Increased from 24px to 28px
         ctx.textAlign = 'center';
-        ctx.fillText(cta.toUpperCase(), canvas.width / 2, ctaY + 38);
+        ctx.fillText(cta.toUpperCase(), canvas.width / 2, ctaY + 45);
         
-        currentY += ctaButtonHeight + 20;
+        currentY += ctaButtonHeight + 30; // More spacing after CTA
     }
 
     // Contact Information
     if (contactInfo.length > 0) {
         ctx.fillStyle = '#333333';
-        ctx.font = '26px Arial';  // Increased from 22px to 26px
+        ctx.font = '24px Arial';  // Slightly smaller from 26px to 24px
         ctx.textAlign = 'center';
         
         contactInfo.forEach((contact, index) => {
             const text = `${contact.icon} ${contact.text}`;
-            ctx.fillText(text, canvas.width / 2, currentY + (index * 40));
+            ctx.fillText(text, canvas.width / 2, currentY + (index * 45));
         });
     }
 
