@@ -319,10 +319,37 @@ function generatePost() {
     const padding = 40;
     const imageGap = 30;
     const headerHeight = 80;
-    const textHeight = description ? 200 : 0; // Increased from 150 to 200
-    const ctaHeight = cta ? 100 : 0; // Increased from 80 to 100
-    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 45 + 40) : 0; // Increased spacing
-    const footerHeight = 60; // Increased from 50 to 60
+    
+    // Calculate actual text height dynamically
+    let actualTextHeight = 0;
+    if (description) {
+        // Pre-calculate how many lines the text will take
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.font = '24px Arial';
+        const maxWidth = 1200; // Approximate width for calculation
+        const words = description.split(' ');
+        let line = '';
+        let lineCount = 0;
+        
+        for (let word of words) {
+            const testLine = line + word + ' ';
+            const metrics = tempCtx.measureText(testLine);
+            if (metrics.width > maxWidth && line !== '') {
+                lineCount++;
+                line = word + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        lineCount++; // Add last line
+        
+        actualTextHeight = (lineCount * 34) + 40; // Line height * lines + spacing
+    }
+    
+    const ctaHeight = cta ? 100 : 0;
+    const contactHeight = contactInfo.length > 0 ? (contactInfo.length * 45 + 40) : 0;
+    const footerHeight = 60;
 
     // Calculate image dimensions (make them equal height)
     const targetHeight = 500;
@@ -330,7 +357,7 @@ function generatePost() {
     const afterWidth = (afterImage.width / afterImage.height) * targetHeight;
 
     const totalWidth = beforeWidth + afterWidth + imageGap + (padding * 2);
-    const totalHeight = headerHeight + targetHeight + textHeight + ctaHeight + contactHeight + footerHeight;
+    const totalHeight = headerHeight + targetHeight + actualTextHeight + ctaHeight + contactHeight + footerHeight;
 
     canvas.width = totalWidth;
     canvas.height = totalHeight;
@@ -371,39 +398,34 @@ function generatePost() {
     // Description text - LARGER FONT
     if (description) {
         ctx.fillStyle = '#333333';
-        ctx.font = '26px Arial';  // Slightly reduced from 28px for better fit
+        ctx.font = '24px Arial';  // Reduced to 24px for better fit
         ctx.textAlign = 'center';
         
-        // Word wrap with max lines
+        // Word wrap - calculate how many lines we actually need
         const maxWidth = canvas.width - (padding * 2);
         const words = description.split(' ');
         let line = '';
-        let lineY = currentY;
-        const lineHeight = 36;  // Good spacing
-        const maxLines = 5; // Limit to 5 lines to prevent overflow
-        let lineCount = 0;
+        let lines = [];
+        const lineHeight = 34;
 
         for (let word of words) {
-            if (lineCount >= maxLines) break; // Stop if we hit max lines
-            
             const testLine = line + word + ' ';
             const metrics = ctx.measureText(testLine);
             if (metrics.width > maxWidth && line !== '') {
-                ctx.fillText(line, canvas.width / 2, lineY);
+                lines.push(line);
                 line = word + ' ';
-                lineY += lineHeight;
-                lineCount++;
             } else {
                 line = testLine;
             }
         }
+        lines.push(line); // Add the last line
         
-        // Draw final line if under max
-        if (lineCount < maxLines) {
-            ctx.fillText(line, canvas.width / 2, lineY);
-        }
+        // Draw all lines
+        lines.forEach((lineText, index) => {
+            ctx.fillText(lineText, canvas.width / 2, currentY + (index * lineHeight));
+        });
         
-        currentY = lineY + 50; // More spacing after text
+        currentY += (lines.length * lineHeight) + 40; // Dynamic spacing based on actual lines
     }
 
     // CTA Button
