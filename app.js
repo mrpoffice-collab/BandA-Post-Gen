@@ -85,9 +85,9 @@ function populateCtaOptions() {
             <option value="Call ${userProfile.name}">Call ${userProfile.name}</option>
             <option value="Text ${userProfile.name}">Text ${userProfile.name}</option>
             <option value="Email ${userProfile.name}">Email ${userProfile.name}</option>
-            <option value="Book ${userProfile.name}">Book ${userProfile.name}</option>
+            <option value="Book with ${userProfile.name}">Book with ${userProfile.name}</option>
             <option value="Message ${userProfile.name}">Message ${userProfile.name}</option>
-            <option value="Visit ${userProfile.name}">Visit ${userProfile.name}</option>
+            <option value="Visit with ${userProfile.name}">Visit with ${userProfile.name}</option>
         `;
         select.appendChild(personalGroup);
     } else {
