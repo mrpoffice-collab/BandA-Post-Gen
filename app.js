@@ -45,13 +45,18 @@ function saveUserProfile() {
         website: document.getElementById('userWebsite').value.trim()
     };
     
+    console.log('Saving user profile:', userProfile);
+    
     localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    
+    console.log('Profile saved to localStorage');
     
     const statusEl = document.getElementById('profileSaveStatus');
     statusEl.textContent = '✅ Profile saved!';
     statusEl.className = 'save-status success';
     
     // Repopulate CTA options with new name
+    console.log('Calling populateCtaOptions...');
     populateCtaOptions();
     
     // Auto-fill contact fields
@@ -67,8 +72,12 @@ function populateCtaOptions() {
     const select = document.getElementById('ctaSelect');
     select.innerHTML = '<option value="">No CTA</option>';
     
+    console.log('Populating CTA options. User profile:', userProfile);
+    console.log('User name:', userProfile.name);
+    
     // Personal CTAs (only if name is saved)
-    if (userProfile.name) {
+    if (userProfile.name && userProfile.name.trim() !== '') {
+        console.log('Adding personalized CTAs for:', userProfile.name);
         const personalGroup = document.createElement('optgroup');
         personalGroup.label = '✨ Personal CTAs';
         
@@ -80,6 +89,8 @@ function populateCtaOptions() {
             <option value="Visit ${userProfile.name}">Visit ${userProfile.name}</option>
         `;
         select.appendChild(personalGroup);
+    } else {
+        console.log('No name saved - skipping personalized CTAs');
     }
     
     // Generic CTAs
@@ -220,7 +231,13 @@ async function improveText() {
     const loadingSpinner = document.getElementById('loadingSpinner');
 
     if (!description) {
-        alert('Please enter some text first!');
+        const textarea = document.getElementById('postDescription');
+        textarea.style.border = '2px solid #dc3545';
+        textarea.placeholder = '⚠️ Please enter some text first!';
+        setTimeout(() => {
+            textarea.style.border = '';
+            textarea.placeholder = 'Describe your before/after transformation...';
+        }, 3000);
         return;
     }
 
@@ -274,19 +291,25 @@ Original text: ${description}`
     } catch (error) {
         console.error('Full error:', error);
         
-        let errorMessage = '❌ Error improving text.\n\n';
+        let errorMessage = '';
         
         if (error.message.includes('401') || error.message.includes('authentication')) {
-            errorMessage += 'Authentication error. Please contact support.';
+            errorMessage = '❌ Auth Error';
         } else if (error.message.includes('429')) {
-            errorMessage += 'Rate limit reached. Please wait a moment and try again.';
+            errorMessage = '❌ Rate Limited';
         } else if (error.message.includes('Failed to fetch')) {
-            errorMessage += 'Network error. Please check your internet connection.';
+            errorMessage = '❌ Network Error';
         } else {
-            errorMessage += error.message;
+            errorMessage = '❌ Error';
         }
         
-        alert(errorMessage);
+        // Show error on button instead of alert
+        improveBtn.textContent = errorMessage;
+        improveBtn.style.backgroundColor = '#dc3545';
+        setTimeout(() => {
+            improveBtn.textContent = '✨ Improve with AI';
+            improveBtn.style.backgroundColor = '';
+        }, 3000);
     } finally {
         improveBtn.disabled = false;
         loadingSpinner.style.display = 'none';
@@ -296,7 +319,17 @@ Original text: ${description}`
 // Generate the post
 function generatePost() {
     if (!beforeImage || !afterImage) {
-        alert('Please upload both before and after images!');
+        // Highlight missing image areas with red border
+        if (!beforeImage) {
+            const beforePreview = document.getElementById('beforePreview');
+            beforePreview.style.border = '3px solid #dc3545';
+            beforePreview.innerHTML = '<p style="color: #dc3545; font-weight: bold;">⚠️ Upload BEFORE image</p>';
+        }
+        if (!afterImage) {
+            const afterPreview = document.getElementById('afterPreview');
+            afterPreview.style.border = '3px solid #dc3545';
+            afterPreview.innerHTML = '<p style="color: #dc3545; font-weight: bold;">⚠️ Upload AFTER image</p>';
+        }
         return;
     }
 
